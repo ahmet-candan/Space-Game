@@ -11,7 +11,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import javax.imageio.stream.FileImageInputStream;
+import javax.swing.JComponent;
 import javax.swing.JPanel;
+import javax.swing.Timer;
 
 class Ates {
 private int x;
@@ -39,6 +41,8 @@ private int y;
     }
 }
 public class Game extends JPanel implements KeyListener,ActionListener{
+    
+    Timer timer = new Timer(5, this);
     private int gecen_sure = 0;
     private int harcanan_mermi = 0;
     
@@ -47,7 +51,6 @@ public class Game extends JPanel implements KeyListener,ActionListener{
     private ArrayList<Ates> atesler = new ArrayList<Ates>();
     private int atesdirY = 1;
     private int topX = 0;
-    
     private int topdirX=2;
     private int uzayGemisiX = 0;
     private int dirUzayX = 20;
@@ -64,6 +67,7 @@ public class Game extends JPanel implements KeyListener,ActionListener{
         g.setColor(Color.red);
         g.fillOval(topX, 0, 20, 20);
         g.drawImage(image, uzayGemisiX, 490,image.getWidth(),image.getHeight(),this);
+        timer.start();
         
     }
 
@@ -74,12 +78,33 @@ public class Game extends JPanel implements KeyListener,ActionListener{
    
     @Override
     public void keyTyped(KeyEvent e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+       
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+         int c = e.getKeyCode();
+        
+        if (c == KeyEvent.VK_LEFT){
+        if (uzayGemisiX<=0){
+        uzayGemisiX = 0;
+        }
+        else {
+        uzayGemisiX-=dirUzayX;
+        }
+        }
+        
+        else if (c == KeyEvent.VK_RIGHT){
+            
+        if (uzayGemisiX>=720){
+        uzayGemisiX = 720;
+        }
+        else {
+        uzayGemisiX+=dirUzayX;
+        }
+            
+        
+        }
     }
 
     @Override
@@ -89,7 +114,16 @@ public class Game extends JPanel implements KeyListener,ActionListener{
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        topX += topdirX;
+        
+        if (topX>= 750){
+        topdirX = -topdirX;       
+        }
+        
+        if (topX<=0){
+            topdirX =-topdirX;
+        }
+        repaint();
     }
     
     
