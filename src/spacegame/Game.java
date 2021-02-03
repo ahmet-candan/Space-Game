@@ -1,10 +1,12 @@
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.geom.Path2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -54,6 +56,16 @@ public class Game extends JPanel implements KeyListener,ActionListener{
     private int topdirX=2;
     private int uzayGemisiX = 0;
     private int dirUzayX = 20;
+    
+    public boolean kontrolEt(){
+    for (Ates ates :atesler){
+    if (new Rectangle(ates.getX(),ates.getY(),10,20).intersects(new Rectangle(topX,0,20,20))){
+        return true;
+    
+    }
+    }
+    return false;
+    }
 
     public Game() throws IOException {
          image = ImageIO.read(new FileImageInputStream(new File("rocket.png")));
@@ -68,6 +80,24 @@ public class Game extends JPanel implements KeyListener,ActionListener{
         g.fillOval(topX, 0, 20, 20);
         g.drawImage(image, uzayGemisiX, 490,image.getWidth(),image.getHeight(),this);
         timer.start();
+        
+        for (Ates ates:atesler){
+        if (ates.getY()<0){
+        atesler.remove(ates);
+        }  
+    }
+        g.setColor(Color.YELLOW);
+        
+        for(Ates ates: atesler){
+            
+            g.fillRect(ates.getX(),ates.getY(),10,20); 
+        }
+        
+        if (kontrolEt()){
+        timer.stop();
+        
+        String mesaj = "Kazandınız..\nHarcanan Ateş:"+harcanan_mermi+"Geçen Süre:"+ 
+        }
         
     }
 
@@ -102,18 +132,31 @@ public class Game extends JPanel implements KeyListener,ActionListener{
         else {
         uzayGemisiX+=dirUzayX;
         }
-            
+           
+        }
         
+        else if (c == KeyEvent.VK_SPACE){
+        atesler.add (new Ates(uzayGemisiX+15, 490));
+        
+        harcanan_mermi++;
         }
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported "
+                + "yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        
+     
+        
+        for (Ates ates:atesler){
+               System.out.println(ates.getY());
+        ates.setY(ates.getY()- atesdirY);
+        }
         topX += topdirX;
         
         if (topX>= 750){
