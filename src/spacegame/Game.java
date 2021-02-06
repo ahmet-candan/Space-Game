@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import javax.imageio.stream.FileImageInputStream;
 import javax.swing.JComponent;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -51,18 +52,20 @@ public class Game extends JPanel implements KeyListener,ActionListener{
     private BufferedImage image;
     
     private ArrayList<Ates> atesler = new ArrayList<Ates>();
-    private int atesdirY = 1;
+    private int atesdirY = 2;
     private int topX = 0;
     private int topdirX=2;
     private int uzayGemisiX = 0;
+    private int uzayGemisiY= 490;
     private int dirUzayX = 20;
     
     public boolean kontrolEt(){
     for (Ates ates :atesler){
-    if (new Rectangle(ates.getX(),ates.getY(),10,20).intersects(new Rectangle(topX,0,20,20))){
+        
+        if (new Rectangle(ates.getX(),ates.getY(),10,20).intersects(new Rectangle(topX,0,20,20))){
         return true;
     
-    }
+        }
     }
     return false;
     }
@@ -70,16 +73,19 @@ public class Game extends JPanel implements KeyListener,ActionListener{
     public Game() throws IOException {
          image = ImageIO.read(new FileImageInputStream(new File("rocket.png")));
          setBackground(Color.BLACK);
+         timer.start();
          
     }
 
     @Override
     public void paint(Graphics g) {
         super.paint(g); //To change body of generated methods, choose Tools | Templates.
+        gecen_sure +=5;
+        
         g.setColor(Color.red);
         g.fillOval(topX, 0, 20, 20);
-        g.drawImage(image, uzayGemisiX, 490,image.getWidth(),image.getHeight(),this);
-        timer.start();
+        g.drawImage(image, uzayGemisiX, uzayGemisiY,image.getWidth(),image.getHeight(),this);
+       
         
         for (Ates ates:atesler){
         if (ates.getY()<0){
@@ -96,7 +102,9 @@ public class Game extends JPanel implements KeyListener,ActionListener{
         if (kontrolEt()){
         timer.stop();
         
-        String mesaj = "Kazandınız..\nHarcanan Ateş:"+harcanan_mermi+"Geçen Süre:"+ 
+        String mesaj = "Kazandınız..\nHarcanan Ateş:"+harcanan_mermi+"\nGeçen Süre:"+ gecen_sure/1000.0;
+            JOptionPane.showMessageDialog(this, mesaj);
+            System.exit(0);
         }
         
     }
@@ -114,8 +122,26 @@ public class Game extends JPanel implements KeyListener,ActionListener{
     @Override
     public void keyPressed(KeyEvent e) {
          int c = e.getKeyCode();
+         
+         if (c == KeyEvent.VK_W || c == KeyEvent.VK_UP){
+             if(uzayGemisiY<=0){
+                 uzayGemisiY=0;
+             }
+             else{
+             uzayGemisiY-=dirUzayX;
+             }
+         }
+         
+         if (c == KeyEvent.VK_S || c == KeyEvent.VK_DOWN){
+             if(uzayGemisiY>=490){
+                 uzayGemisiY=490;
+             }
+             else{
+             uzayGemisiY+=dirUzayX;
+             }
+         }
         
-        if (c == KeyEvent.VK_LEFT){
+        if (c == KeyEvent.VK_A|| c == KeyEvent.VK_LEFT){
         if (uzayGemisiX<=0){
         uzayGemisiX = 0;
         }
@@ -124,7 +150,7 @@ public class Game extends JPanel implements KeyListener,ActionListener{
         }
         }
         
-        else if (c == KeyEvent.VK_RIGHT){
+        else if (c == KeyEvent.VK_RIGHT || c == KeyEvent.VK_D){
             
         if (uzayGemisiX>=720){
         uzayGemisiX = 720;
@@ -136,7 +162,7 @@ public class Game extends JPanel implements KeyListener,ActionListener{
         }
         
         else if (c == KeyEvent.VK_SPACE){
-        atesler.add (new Ates(uzayGemisiX+15, 490));
+        atesler.add (new Ates(uzayGemisiX+18, uzayGemisiY));
         
         harcanan_mermi++;
         }
